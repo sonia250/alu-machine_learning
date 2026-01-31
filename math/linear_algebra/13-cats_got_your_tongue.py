@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Module for concatenating matrices along a specific axis"""
-import numpy as np
+"""Module for performing element-wise operations on matrices"""
 
 
-def np_cat(mat1, mat2, axis=0):
+def np_elementwise(mat1, mat2):
     """
-    Concatenates two matrices along a specific axis
+    Performs element-wise addition, subtraction, multiplication, and division
 
     Args:
         mat1: First matrix (numpy.ndarray)
-        mat2: Second matrix (numpy.ndarray)
-        axis: Axis along which to concatenate (default=0)
+        mat2: Second matrix (numpy.ndarray or scalar)
 
     Returns:
-        A new numpy.ndarray with concatenated matrices
+        A tuple containing (sum, difference, product, quotient)
     """
-    return np.concatenate((mat1, mat2), axis=axis)
+    add = mat1 + mat2
+    sub = mat1 - mat2
+    mul = mat1 * mat2
+    div = mat1 / mat2
+
+    return (add, sub, mul, div)
