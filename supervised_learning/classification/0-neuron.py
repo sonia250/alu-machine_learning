@@ -28,3 +28,4 @@ class Neuron:
         self.b = 0
         # Initialize activated output to 0
         self.A = 0
+        
