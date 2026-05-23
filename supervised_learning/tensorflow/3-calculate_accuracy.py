@@ -2,6 +2,7 @@
 """Module for calculating prediction accuracy"""
 import tensorflow as tf
 
+
 def calculate_accuracy(y, y_pred):
     """
     Calculates the accuracy of a prediction
