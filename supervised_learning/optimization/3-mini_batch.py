@@ -59,7 +59,6 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
                 X_shuffled, Y_shuffled = shuffle_data(X_train, Y_train)
 
                 # Loop over batches
-                step = 0
                 for i in range(0, X_train.shape[0], batch_size):
                     # Get batch
                     X_batch = X_shuffled[i:i + batch_size]
@@ -71,7 +70,8 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
                         feed_dict={x: X_batch, y: Y_batch}
                     )
 
-                    step += 1
+                    # Calculate step number (batch index / batch_size + 1)
+                    step = i // batch_size + 1
                     # Print every 100 steps
                     if step % 100 == 0:
                         print("\tStep {}:".format(step))
