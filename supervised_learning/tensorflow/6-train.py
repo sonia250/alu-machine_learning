@@ -74,8 +74,8 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations,
                 feed_dict={x: X_valid, y: Y_valid}
             )
 
-            # Print every 100 iterations and at 0 and iterations
-            if i % 100 == 0 or i == iterations:
+            # Print at iteration 0, every 100 iterations, and at final iteration
+            if i == 0 or i % 100 == 0 or i == iterations:
                 print("After {} iterations:".format(i))
                 print("\tTraining Cost: {}".format(train_cost))
                 print("\tTraining Accuracy: {}".format(train_accuracy))
