@@ -19,16 +19,9 @@ def create_batch_norm_layer(prev, n, activation):
         mode="FAN_AVG"
     )
 
-    # Dense layer
     x = tf.layers.dense(prev, n, activation=None,
                         kernel_initializer=initializer)
-
-    # Manual batch norm with gamma initialized to 1, beta to 0
-    mean, variance = tf.nn.moments(x, [0], keep_dims=False)
-    gamma = tf.Variable(tf.ones([1, n]), trainable=True)
-    beta = tf.Variable(tf.zeros([1, n]), trainable=True)
-
-    bn = (x - mean) / tf.sqrt(variance + 1e-8)
-    output = activation(tf.nn.bias_add(gamma * bn, tf.squeeze(beta)))
+    bn = tf.layers.batch_normalization(x, training=True, epsilon=1e-8)
+    output = activation(bn)
 
     return output
