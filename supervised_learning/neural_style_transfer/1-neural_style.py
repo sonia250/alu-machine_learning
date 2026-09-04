@@ -82,9 +82,10 @@ class NST:
                                                    weights='imagenet')
         VGG19_model.save("VGG19_base_model")
 
-        custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
-        vgg = tf.keras.models.load_model("VGG19_base_model",
-                                         custom_objects=custom_objects)
+                custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
+        vgg = tf.keras.models.load_model(
+            "VGG19_base_model",
+            custom_objects=custom_objects)
 
         style_outputs = []
         content_output = None
