@@ -55,7 +55,7 @@ class NST:
         self.alpha = float(alpha)
         self.beta = float(beta)
 
-    @staticmethod
+        @staticmethod
     def scale_image(image):
         """
         Rescales an image such that pixel values are between 0 and 1
@@ -80,7 +80,6 @@ class NST:
         h, w = image.shape[0], image.shape[1]
 
         # Calculate new dimensions maintaining aspect ratio
-        # Max dimension becomes 512
         if h > w:
             new_h = 512
             new_w = int(w * (512.0 / h))
@@ -88,14 +87,10 @@ class NST:
             new_w = 512
             new_h = int(h * (512.0 / w))
 
-        # Convert to float32 tensor and add batch dimension
-        img_tensor = tf.cast(image, tf.float32)
-        img_tensor = tf.expand_dims(img_tensor, 0)
-
         # Resize using bicubic interpolation
         img_tensor = tf.image.resize(
-            img_tensor,
-            [new_h, new_w],
+            tf.expand_dims(image, 0),
+            (new_h, new_w),
             method='bicubic'
         )
 
