@@ -48,6 +48,8 @@ class NST:
         self.alpha = alpha
         self.beta = beta
         self.load_model()
+        self.gram_style_features = None
+        self.content_feature = None
         self.generate_features()
 
     @staticmethod
@@ -124,10 +126,10 @@ class NST:
     def generate_features(self):
         """Extracts features used to calculate neural style cost"""
         style_outputs = self.model(self.style_image)
-        self.gram_style_features = []
-        for i in range(len(self.style_layers)):
-            gram = self.gram_matrix(style_outputs[i])
-            self.gram_style_features.append(gram)
+        self.gram_style_features = [
+            self.gram_matrix(style_outputs[i])
+            for i in range(len(self.style_layers))
+        ]
 
         content_outputs = self.model(self.content_image)
         self.content_feature = content_outputs[-1]
