@@ -134,16 +134,22 @@ class NST:
         content_outputs = self.model(self.content_image)
         self.content_feature = content_outputs[-1]
 
-            def layer_style_cost(self, style_output, gram_target):
+    def layer_style_cost(self, style_output, gram_target):
         """
         Calculates the style cost for a single layer
 
         Args:
-            style_output: tf.Tensor of shape (1, h, w, c)
-            gram_target: tf.Tensor of shape (1, c, c)
+            style_output: tf.Tensor of shape (1, h, w, c) containing the
+                layer style output of the generated image
+            gram_target: tf.Tensor of shape (1, c, c) the gram matrix of
+                the target style output for that layer
 
         Returns:
             the layer's style cost
+
+        Raises:
+            TypeError: if style_output is not a tensor of rank 4
+            TypeError: if gram_target shape is incorrect
         """
         if not isinstance(style_output, (tf.Tensor, tf.Variable)):
             raise TypeError(
@@ -166,6 +172,6 @@ class NST:
                     c, c))
 
         gram_style = self.gram_matrix(style_output)
-        style_cost = tf.reduce_mean(tf.square(gram_style - gram_target))
+        style_cost = tf.reduce_sum(tf.square(gram_style - gram_target))
 
         return style_cost
