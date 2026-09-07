@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-    def __init__(self, style_image, content_image, alpha=1e4, beta=1):
+"""Defines class NST that performs tasks for neural style transfer"""
         """Class constructor for Neural Style Transfer class"""
         if type(style_image) is not np.ndarray or \
                 len(style_image.shape) != 3:
