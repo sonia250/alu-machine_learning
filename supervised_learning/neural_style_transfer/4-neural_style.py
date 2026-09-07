@@ -134,7 +134,7 @@ class NST:
         content_outputs = self.model(self.content_image)
         self.content_feature = content_outputs[-1]
 
-    def layer_style_cost(self, style_output, gram_target):
+            def layer_style_cost(self, style_output, gram_target):
         """
         Calculates the style cost for a single layer
 
@@ -165,12 +165,7 @@ class NST:
                 "gram_target must be a tensor of shape [1, {}, {}]".format(
                     c, c))
 
-        # Calculate gram matrix of style_output
         gram_style = self.gram_matrix(style_output)
-
-        # Calculate style cost as MSE between gram matrices
-        # Normalize by (2 * c^2)
-        style_cost = tf.reduce_sum(tf.square(gram_style - gram_target))
-        style_cost = style_cost / (2 * tf.cast(c, tf.float32) ** 2)
+        style_cost = tf.reduce_mean(tf.square(gram_style - gram_target))
 
         return style_cost
