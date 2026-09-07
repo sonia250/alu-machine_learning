@@ -144,9 +144,6 @@ class NST:
 
         Returns:
             the layer's style cost
-
-        Raises:
-            TypeError: if inputs are invalid
         """
         if not isinstance(style_output, (tf.Tensor, tf.Variable)):
             raise TypeError(
@@ -171,7 +168,9 @@ class NST:
         # Calculate gram matrix of style_output
         gram_style = self.gram_matrix(style_output)
 
-        # Calculate Mean Squared Error between gram matrices
-        style_cost = tf.reduce_mean(tf.square(gram_style - gram_target))
+        # Calculate style cost as MSE between gram matrices
+        # Normalize by (2 * c^2)
+        style_cost = tf.reduce_sum(tf.square(gram_style - gram_target))
+        style_cost = style_cost / (2 * tf.cast(c, tf.float32) ** 2)
 
         return style_cost
