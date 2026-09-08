@@ -173,5 +173,7 @@ class NST:
 
         gram_style = self.gram_matrix(style_output)
         style_cost = tf.reduce_sum(tf.square(gram_style - gram_target))
+        c_float = tf.cast(c, tf.float32)
+        style_cost = style_cost / (4 * c_float ** 2)
 
         return style_cost
