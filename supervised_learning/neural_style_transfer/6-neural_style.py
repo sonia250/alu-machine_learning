@@ -268,10 +268,12 @@ class NST:
                 contains content output for the generated image
 
         returns:
-            the style cost
+            the content cost
         """
         shape = self.content_feature.shape
         if not isinstance(content_output, (tf.Tensor, tf.Variable)) or \
            content_output.shape != shape:
             raise TypeError(
                 "content_output must be a tensor of shape {}".format(shape))
+
+        return tf.reduce_mean(tf.square(content_output - self.content_feature))
