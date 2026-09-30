@@ -19,7 +19,8 @@ class SelfAttention(tf.keras.layers.Layer):
 
         Args:
             s_prev: ``(batch, units)`` prior decoder hidden state.
-            hidden_states: ``(batch, sequence_length, encoder_units)`` encoder outputs.
+            hidden_states: ``(batch, sequence_length, encoder_units)``
+                encoder outputs.
 
         Returns:
             Tuple ``(context, weights)``: ``context`` has shape ``(batch,
