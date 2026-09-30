@@ -51,21 +51,17 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         K = self.Wk(K)
         V = self.Wv(V)
 
-        Q = self._split_heads(Q, batch_size)
-        K = self._split_heads(K, batch_size)
-        V = self._split_heads(V, batch_size)
+        Q = self.split_heads(Q, batch_size)
+        K = self.split_heads(K, batch_size)
+        V = self.split_heads(V, batch_size)
 
         attention, weights = sdp_attention(Q, K, V, mask)
+        attention = tf.transpose(attention, [0, 2, 1, 3])
+        attention = tf.reshape(attention, (batch_size, -1, self.dm))
 
-        attention = tf.transpose(attention, perm=[0, 2, 1, 3])
-        concat_attention = tf.reshape(
-            attention, (batch_size, -1, self.dm))
+        return self.linear(attention), weights
 
-        output = self.linear(concat_attention)
-        return output, weights
-
-    def _split_heads(self, x, batch_size):
+    def split_heads(self, x, batch_size):
         """Reshape to ``(batch, h, seq_len, depth)``."""
-        seq_len = tf.shape(x)[1]
-        x = tf.reshape(x, (batch_size, seq_len, self.h, self.depth))
-        return tf.transpose(x, perm=[0, 2, 1, 3])
+        x = tf.reshape(x, (batch_size, -1, self.h, self.depth))
+        return tf.transpose(x, [0, 2, 1, 3])
