@@ -8,7 +8,7 @@ class SelfAttention(tf.keras.layers.Layer):
     """Additive alignment: Dense W/U plus Dense V on tanh(score)."""
 
     def __init__(self, units, **kwargs):
-        super().__init__(name="self_attention", **kwargs)
+        super().__init__(**kwargs)
         self.W = tf.keras.layers.Dense(units)
         self.U = tf.keras.layers.Dense(units)
         self.V = tf.keras.layers.Dense(1)

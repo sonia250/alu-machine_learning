@@ -3,7 +3,7 @@
 
 import tensorflow as tf
 
-MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
+sdp_attention = __import__('5-sdp_attention').sdp_attention
 
 
 class DecoderBlock(tf.keras.layers.Layer):

@@ -21,9 +21,6 @@ class MultiHeadAttention(tf.keras.layers.Layer):
     """
 
     def __init__(self, dm, h):
-        if h <= 0 or dm <= 0 or dm % h != 0:
-            raise ValueError("dm and h must be positive, and dm divisible by h")
-
         super().__init__()
         self.h = h
         self.dm = dm

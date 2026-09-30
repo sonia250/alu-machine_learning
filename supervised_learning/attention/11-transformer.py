@@ -41,7 +41,7 @@ class Transformer(tf.keras.Model):
         self.linear = tf.keras.layers.Dense(target_vocab)
 
     def call(self, inputs, target, training, encoder_mask,
-             look_ahead_mask, decoder_mask):
+             look_ahead_mask, target_mask):
         """
         Forward pass through the Transformer.
 
@@ -51,18 +51,17 @@ class Transformer(tf.keras.Model):
             training: Whether the model is in training mode.
             encoder_mask: Padding mask for the encoder.
             look_ahead_mask: Look-ahead mask for the decoder.
-            decoder_mask: Padding mask for encoder-decoder attention.
+            target_mask: Padding mask for encoder-decoder attention.
 
         Returns:
             Logits of shape ``(batch, target_seq_len, target_vocab)``.
         """
-        enc_output = self.encoder(
-            inputs, training=training, mask=encoder_mask)
+        enc_output = self.encoder(inputs, training, encoder_mask)
         dec_output = self.decoder(
             target,
             enc_output,
-            training=training,
-            look_ahead_mask=look_ahead_mask,
-            padding_mask=decoder_mask,
+            training,
+            look_ahead_mask,
+            target_mask,
         )
         return self.linear(dec_output)
