@@ -26,9 +26,15 @@ class SelfAttention(tf.keras.layers.Layer):
             Tuple ``(context, weights)``: ``context`` has shape ``(batch,
             units)``, ``weights`` ``(batch, input_seq_len, 1)``.
         """
-        projected_state = tf.expand_dims(self.W(s_prev), axis=1)
-        projected_enc = self.U(hidden_states)
-        energies = self.V(tf.tanh(projected_state + projected_enc))
-        weights = tf.nn.softmax(energies, axis=1)
-        context = tf.reduce_sum(weights * hidden_states, axis=1)
-        return context, weights
+        s_prev = tf.expand_dims(s_prev, axis=1)
+        score = self.V(
+            tf.nn.tanh(
+                self.W(s_prev) + self.U(hidden_states)
+            )
+        )
+        attention_weights = tf.nn.softmax(score, axis=1)
+        context = tf.reduce_sum(
+            attention_weights * hidden_states,
+            axis=1,
+        )
+        return context, attention_weights
