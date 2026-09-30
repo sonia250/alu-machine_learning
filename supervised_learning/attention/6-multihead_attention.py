@@ -7,18 +7,7 @@ sdp_attention = __import__('5-sdp_attention').sdp_attention
 
 
 class MultiHeadAttention(tf.keras.layers.Layer):
-    """
-    Multi-head attention using parallel scaled dot-product attention heads.
-
-    Attributes:
-        h: Number of attention heads.
-        dm: Model dimensionality.
-        depth: Dimension per head (``dm // h``).
-        Wq: Query projection layer.
-        Wk: Key projection layer.
-        Wv: Value projection layer.
-        linear: Output projection layer.
-    """
+    """Multi-head attention layer."""
 
     def __init__(self, dm, h):
         super().__init__()
@@ -31,29 +20,11 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.linear = tf.keras.layers.Dense(dm)
 
     def call(self, Q, K, V, mask=None):
-        """
-        Apply multi-head attention to the inputs.
-
-        Args:
-            Q: Tensor of shape ``(batch, seq_len_q, dk)``.
-            K: Tensor of shape ``(batch, seq_len_v, dk)``.
-            V: Tensor of shape ``(batch, seq_len_v, dv)``.
-            mask: Optional attention mask (often ``None``).
-
-        Returns:
-            Tuple ``(output, weights)`` where ``output`` has shape
-            ``(batch, seq_len_q, dm)`` and ``weights`` has shape
-            ``(batch, h, seq_len_q, seq_len_v)``.
-        """
         batch_size = tf.shape(Q)[0]
 
-        Q = self.Wq(Q)
-        K = self.Wk(K)
-        V = self.Wv(V)
-
-        Q = self.split_heads(Q, batch_size)
-        K = self.split_heads(K, batch_size)
-        V = self.split_heads(V, batch_size)
+        Q = self.split_heads(self.Wq(Q), batch_size)
+        K = self.split_heads(self.Wk(K), batch_size)
+        V = self.split_heads(self.Wv(V), batch_size)
 
         attention, weights = sdp_attention(Q, K, V, mask)
         attention = tf.transpose(attention, [0, 2, 1, 3])
