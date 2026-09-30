@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Attention-based GRU decoder step for neural MT."""
+"""Attention-based GRU decoder."""
 
 import tensorflow as tf
 
@@ -7,26 +7,10 @@ SelfAttention = __import__('1-self_attention').SelfAttention
 
 
 class RNNDecoder(tf.keras.layers.Layer):
-    """
-    Decoder layer using additive attention over encoder states.
-
-    Attributes:
-        embedding: Target vocabulary embedding layer.
-        gru: Decoder recurrent layer.
-        F: Output projection to vocabulary size.
-        attention: Alignment model over encoder hidden states.
-    """
+    """RNN decoder with additive attention."""
 
     def __init__(self, vocab, embedding, units, batch):
-        """
-        Initialize the RNNDecoder.
-
-        Args:
-            vocab: Size of the output vocabulary.
-            embedding: Dimensionality of the embedding vector.
-            units: Number of hidden units in the GRU cell.
-            batch: Batch size (unused; kept for API compatibility).
-        """
+        """Initialize the decoder."""
         super().__init__()
         self.embedding = tf.keras.layers.Embedding(vocab, embedding)
         self.gru = tf.keras.layers.GRU(
@@ -37,14 +21,18 @@ class RNNDecoder(tf.keras.layers.Layer):
         )
         self.F = tf.keras.layers.Dense(vocab)
         self.attention = SelfAttention(units)
+        self.batch = batch
 
     def call(self, x, s_prev, hidden_states):
-        """Run one decoder step."""
-        context, weights = self.attention(s_prev, hidden_states)
+        """Perform one decoding step."""
+        context, _ = self.attention(s_prev, hidden_states)
+        context = tf.expand_dims(context, axis=1)
 
         x = self.embedding(x)
         x = tf.concat([context, x], axis=-1)
 
-        output, s = self.gru(x, initial_state=s_prev)
+        output, state = self.gru(x, initial_state=s_prev)
+        output = tf.reshape(output, (-1, output.shape[2]))
         y = self.F(output)
-        return y, s
+
+        return y, state
