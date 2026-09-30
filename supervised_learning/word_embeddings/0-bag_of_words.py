@@ -20,7 +20,7 @@ def bag_of_words(sentences, vocab=None):
             {word for sentence in tokenized for word in sentence}
         )
     else:
-        features = sorted(vocab)
+        features = list(vocab)
 
     embeddings = np.zeros(
         (len(sentences), len(features)),
