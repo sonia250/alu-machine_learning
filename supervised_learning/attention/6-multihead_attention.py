@@ -20,6 +20,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.linear = tf.keras.layers.Dense(dm)
 
     def call(self, Q, K, V, mask=None):
+        """Compute multi-head scaled dot-product attention."""
         batch_size = tf.shape(Q)[0]
 
         Q = self.split_heads(self.Wq(Q), batch_size)
