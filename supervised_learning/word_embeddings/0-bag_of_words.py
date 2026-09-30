@@ -16,9 +16,9 @@ def bag_of_words(sentences, vocab=None):
         tokenized.append(re.findall(r"\b\w+\b", sentence))
 
     if vocab is None:
-        features = sorted({
-            word for sentence in tokenized for word in sentence
-        })
+        features = sorted(
+            {word for sentence in tokenized for word in sentence}
+        )
     else:
         features = sorted(vocab)
 
