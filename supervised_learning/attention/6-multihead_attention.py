@@ -20,7 +20,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.linear = tf.keras.layers.Dense(dm)
 
     def call(self, Q, K, V, mask=None):
-        """Compute multi-head attention."""
+        """Compute multi-head scaled dot-product attention."""
         batch_size = tf.shape(Q)[0]
 
         Q = self.split_heads(self.Wq(Q), batch_size)
@@ -34,6 +34,6 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         return self.linear(attention), weights
 
     def split_heads(self, x, batch_size):
-        """Reshape to ``(batch, h, seq_len, depth)``."""
+        """Split the last dimension into attention heads."""
         x = tf.reshape(x, (batch_size, -1, self.h, self.depth))
         return tf.transpose(x, [0, 2, 1, 3])
