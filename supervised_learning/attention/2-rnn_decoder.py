@@ -39,24 +39,13 @@ class RNNDecoder(tf.keras.layers.Layer):
         self.attention = SelfAttention(units)
 
     def call(self, x, s_prev, hidden_states):
-        """
-        Perform one decoder step with attention.
+        """Run one decoder step."""
+        context, weights = self.attention(s_prev, hidden_states)
 
-        Args:
-            x: Tensor of shape (batch, 1) with previous target word indices.
-            s_prev: Tensor of shape (batch, units) with previous decoder state.
-            hidden_states: Tensor of shape (batch, input_seq_len, units)
-                with encoder outputs.
-
-        Returns:
-            Tuple (y, s):
-                y: Tensor of shape (batch, vocab) with output logits.
-                s: Tensor of shape (batch, units) with new decoder state.
-        """
-        context, _ = self.attention(s_prev, hidden_states)
-        context = tf.expand_dims(context, 1)
         x = self.embedding(x)
         x = tf.concat([context, x], axis=-1)
+
         output, s = self.gru(x, initial_state=s_prev)
-        y = self.F(s)
+        y = self.F(output)
+
         return y, s
