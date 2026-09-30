@@ -8,10 +8,10 @@ import numpy as np
 
 def tf_idf(sentences, vocab=None):
     """Create normalized TF-IDF embeddings."""
-    tokenized = [
-        re.findall(r"\b\w+\b", sentence.lower())
-        for sentence in sentences
-    ]
+    tokenized = []
+    for sentence in sentences:
+        sentence = re.sub(r"'s\b", "", sentence.lower())
+        tokenized.append(re.findall(r"\b\w+\b", sentence))
 
     if vocab is None:
         features = sorted({
