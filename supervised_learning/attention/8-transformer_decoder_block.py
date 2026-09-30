@@ -11,7 +11,7 @@ class DecoderBlock(tf.keras.layers.Layer):
 
     def __init__(self, dm, h, hidden, drop_rate=0.1):
         """Initialize the decoder block."""
-        super().__init__(name='decoder_block')
+        super().__init__()
         self.mha1 = MultiHeadAttention(dm, h)
         self.mha2 = MultiHeadAttention(dm, h)
         self.dense_hidden = tf.keras.layers.Dense(
