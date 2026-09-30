@@ -1,53 +1,38 @@
 #!/usr/bin/env python3
-"""Bag-of-words sentence embeddings."""
+"""Creates a bag-of-words embedding matrix."""
 
 import re
+from collections import Counter
 
 import numpy as np
 
 
-def _tokenize(sentence):
-    """Lowercase sentence, extract alphabetic runs, drop single-letter tokens."""
-    words = re.findall(r"[a-z]+", sentence.lower())
-    return [w for w in words if len(w) > 1]
-
-
 def bag_of_words(sentences, vocab=None):
-    """
-    Build a bag-of-words count matrix.
+    """Create bag-of-words embeddings."""
+    tokenized = []
 
-    Words are contiguous runs of lowercase letters; non-letters separate tokens.
-    Single-letter tokens (e.g. ``s`` from ``children's``) are ignored.
+    for sentence in sentences:
+        sentence = re.sub(r"'s\b", "", sentence.lower())
+        tokenized.append(re.findall(r"\b\w+\b", sentence))
 
-    Args:
-        sentences (list): Strings to encode.
-        vocab (list | None): Feature names in sorted order desired; if ``None``,
-            use every token from ``sentences`` (after tokenization rules above),
-            sorted alphabetically.
-
-    Returns:
-        tuple:
-            embeddings (np.ndarray): Shape ``(len(sentences), len(features))``.
-            features (list): Vocabulary ordering used as columns (strings).
-    """
     if vocab is None:
-        seen = []
-        for s in sentences:
-            for w in _tokenize(s):
-                seen.append(w)
-        features = sorted(set(seen))
+        features = sorted({
+            word for sentence in tokenized for word in sentence
+        })
     else:
-        features = list(vocab)
+        features = sorted(vocab)
 
-    word_to_col = {w: i for i, w in enumerate(features)}
-    embeddings = np.zeros((len(sentences), len(features)), dtype=np.int64)
+    embeddings = np.zeros(
+        (len(sentences), len(features)),
+        dtype=int,
+    )
 
-    for si, sentence in enumerate(sentences):
-        counts = {}
-        for w in _tokenize(sentence):
-            if w in word_to_col:
-                counts[w] = counts.get(w, 0) + 1
-        for w, n in counts.items():
-            embeddings[si, word_to_col[w]] = n
+    feature_index = {word: index for index, word in enumerate(features)}
+
+    for row, sentence in enumerate(tokenized):
+        counts = Counter(sentence)
+        for word, count in counts.items():
+            if word in feature_index:
+                embeddings[row, feature_index[word]] = count
 
     return embeddings, features
