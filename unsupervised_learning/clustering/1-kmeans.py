@@ -3,8 +3,6 @@
 
 import numpy as np
 
-initialize = __import__('0-initialize').initialize
-
 
 def kmeans(X, k, iterations=1000):
     """Perform K-means clustering."""
@@ -21,16 +19,13 @@ def kmeans(X, k, iterations=1000):
     ):
         return None, None
 
-    C = initialize(X, k)
-    reinitializations = np.random.uniform(
-        np.min(X, axis=0),
-        np.max(X, axis=0),
-        size=(k, X.shape[1]),
-    )
+    minimum = np.min(X, axis=0)
+    maximum = np.max(X, axis=0)
+    C = np.random.uniform(minimum, maximum, (k, X.shape[1]))
 
     for _ in range(iterations):
         distances = np.linalg.norm(
-            X[:, np.newaxis, :] - C[np.newaxis, :, :],
+            X[:, np.newaxis] - C[np.newaxis, :],
             axis=2,
         )
         clss = np.argmin(distances, axis=1)
@@ -39,7 +34,11 @@ def kmeans(X, k, iterations=1000):
         for cluster in range(k):
             points = X[clss == cluster]
             if points.shape[0] == 0:
-                C[cluster] = reinitializations[cluster]
+                C[cluster] = np.random.uniform(
+                    minimum,
+                    maximum,
+                    X.shape[1],
+                )
             else:
                 C[cluster] = np.mean(points, axis=0)
 
