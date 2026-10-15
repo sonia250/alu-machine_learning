@@ -22,26 +22,29 @@ def kmeans(X, k, iterations=1000):
     maximum = np.max(X, axis=0)
     C = np.random.uniform(minimum, maximum, (k, X.shape[1]))
 
+    
     for _ in range(iterations):
         distances = np.linalg.norm(
-            X[:, np.newaxis] - C[np.newaxis, :],
-            axis=2,
+            X[:, :, np.newaxis] - C.T[np.newaxis, :, :],
+            axis=1,
         )
         clss = np.argmin(distances, axis=1)
         previous = C.copy()
 
         for cluster in range(k):
-            points = X[clss == cluster]
-            if points.shape[0] == 0:
-                C[cluster] = np.random.uniform(
-                    minimum,
-                    maximum,
-                    X.shape[1],
+            if np.any(clss == cluster):
+                C[cluster] = np.mean(
+                    X[clss == cluster],
+                    axis=0,
                 )
             else:
-                C[cluster] = np.mean(points, axis=0)
+                C[cluster] = np.random.uniform(
+                    low=minimum,
+                    high=maximum,
+                    size=X.shape[1],
+                )
 
-        if np.array_equal(C, previous):
+        if np.all(C == previous):
             break
 
     return C, clss
