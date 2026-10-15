@@ -13,7 +13,6 @@ def kmeans(X, k, iterations=1000):
         or X.shape[1] == 0
         or not isinstance(k, int)
         or k <= 0
-        or k > X.shape[0]
         or not isinstance(iterations, int)
         or iterations <= 0
     ):
