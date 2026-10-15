@@ -22,7 +22,6 @@ def kmeans(X, k, iterations=1000):
     maximum = np.max(X, axis=0)
     C = np.random.uniform(minimum, maximum, (k, X.shape[1]))
 
-    
     for _ in range(iterations):
         distances = np.linalg.norm(
             X[:, :, np.newaxis] - C.T[np.newaxis, :, :],
