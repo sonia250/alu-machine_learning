@@ -13,7 +13,6 @@ def pca(X, ndim):
         or X.shape[1] == 0
         or not isinstance(ndim, int)
         or ndim <= 0
-        or ndim > X.shape[1]
     ):
         return None
 
