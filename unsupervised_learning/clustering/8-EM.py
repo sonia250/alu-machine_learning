@@ -70,7 +70,7 @@ def expectation_maximization(
         if pi is None:
             return None, None, None, None, None
 
-    g, _ = expectation(X, pi, m, S)
+    g, likelihood = expectation(X, pi, m, S)
     if g is None:
         return None, None, None, None, None
     return pi, m, S, g, likelihood
