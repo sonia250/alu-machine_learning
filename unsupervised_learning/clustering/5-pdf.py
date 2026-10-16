@@ -20,20 +20,21 @@ def pdf(X, m, S):
     ):
         return None
 
-    sign, log_determinant = np.linalg.slogdet(S)
-    if sign <= 0 or not np.isfinite(log_determinant):
+    determinant = np.linalg.det(S)
+    if determinant <= 0:
         return None
 
     try:
-        difference = X - m
-        solved = np.linalg.solve(S, difference.T).T
+        inverse = np.linalg.inv(S)
     except np.linalg.LinAlgError:
         return None
 
-    mahalanobis = np.sum(difference * solved, axis=1)
-    log_density = -0.5 * (
-        X.shape[1] * np.log(2 * np.pi)
-        + log_determinant
-        + mahalanobis
+    difference = X - m
+    exponent = -0.5 * np.einsum(
+        'ij,jk,ik->i',
+        difference,
+        inverse,
+        difference,
     )
-    return np.maximum(np.exp(log_density), 1e-300)
+    coefficient = 1 / np.sqrt((2 * np.pi) ** X.shape[1] * determinant)
+    return np.maximum(coefficient * np.exp(exponent), 1e-300)

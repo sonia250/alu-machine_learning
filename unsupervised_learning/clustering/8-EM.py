@@ -49,11 +49,25 @@ def expectation_maximization(
                     round(likelihood, 5),
                 )
             )
-        if previous is not None and abs(likelihood - previous) <= tol:
-            break
+        converged = (
+            previous is not None
+            and abs(likelihood - previous) <= tol
+        )
         previous = likelihood
         pi, m, S = maximization(X, g)
         if pi is None:
             return None, None, None, None, None
+        if converged:
+            g, likelihood = expectation(X, pi, m, S)
+            if g is None:
+                return None, None, None, None, None
+            if verbose:
+                print(
+                    'Log Likelihood after {} iterations: {}'.format(
+                        iteration + 1,
+                        round(likelihood, 5),
+                    )
+                )
+            break
 
     return pi, m, S, g, likelihood
