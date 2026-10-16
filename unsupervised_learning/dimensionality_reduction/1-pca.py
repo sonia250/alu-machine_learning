@@ -17,5 +17,6 @@ def pca(X, ndim):
     ):
         return None
 
-    _, _, vh = np.linalg.svd(X)
-    return np.matmul(X, vh[:ndim].T)
+    centered = X - np.mean(X, axis=0)
+    _, _, vh = np.linalg.svd(centered)
+    return np.matmul(centered, vh[:ndim].T)
