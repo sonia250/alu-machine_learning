@@ -46,4 +46,9 @@ def kmeans(X, k, iterations=1000):
         if np.all(C == previous):
             break
 
+    distances = np.linalg.norm(
+        X[:, :, np.newaxis] - C.T[np.newaxis, :, :],
+        axis=1,
+    )
+    clss = np.argmin(distances, axis=1)
     return C, clss
