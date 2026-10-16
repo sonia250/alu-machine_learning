@@ -31,11 +31,14 @@ def expectation(X, pi, m, S):
 
     probabilities = np.zeros((pi.shape[0], X.shape[0]))
     for cluster in range(pi.shape[0]):
-        probabilities[cluster] = pi[cluster] * pdf(
+        density = pdf(
             X,
             m[cluster],
             S[cluster],
         )
+        if density is None:
+            return None, None
+        probabilities[cluster] = pi[cluster] * density
 
     totals = np.sum(probabilities, axis=0)
     g = probabilities / totals
