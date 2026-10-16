@@ -42,13 +42,10 @@ def expectation_maximization(
         g, likelihood = expectation(X, pi, m, S)
         if g is None:
             return None, None, None, None, None
-        if verbose and (iteration % 10 == 0 or iteration == iterations - 1):
-            display_iteration = (
-                iterations if iteration == iterations - 1 else iteration
-            )
+        if verbose and iteration % 10 == 0:
             print(
                 'Log Likelihood after {} iterations: {}'.format(
-                    display_iteration,
+                    iteration,
                     round(likelihood, 5),
                 )
             )
@@ -73,4 +70,11 @@ def expectation_maximization(
     g, likelihood = expectation(X, pi, m, S)
     if g is None:
         return None, None, None, None, None
+    if verbose and iteration == iterations - 1:
+        print(
+            'Log Likelihood after {} iterations: {}'.format(
+                iterations,
+                round(likelihood, 5),
+            )
+        )
     return pi, m, S, g, likelihood
