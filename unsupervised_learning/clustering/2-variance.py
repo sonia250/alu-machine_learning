@@ -18,5 +18,8 @@ def variance(X, C):
 	):
 		return None
 
-	distances = np.sum((X[:, np.newaxis, :] - C[np.newaxis, :, :]) ** 2, axis=2)
+	distances = np.sum(
+		(X[:, np.newaxis, :] - C[np.newaxis, :, :]) ** 2,
+		axis=2,
+	)
 	return np.sum(np.min(distances, axis=1))
