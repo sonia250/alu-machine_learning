@@ -43,14 +43,21 @@ def expectation_maximization(
         if g is None:
             return None, None, None, None, None
         if verbose and (iteration % 10 == 0 or iteration == iterations - 1):
+            display_iteration = (
+                iterations if iteration == iterations - 1 else iteration
+            )
             print(
                 'Log Likelihood after {} iterations: {}'.format(
-                    iteration,
+                    display_iteration,
                     round(likelihood, 5),
                 )
             )
         if previous is not None and abs(likelihood - previous) <= tol:
-            if verbose and iteration % 10 != 0:
+            if (
+                verbose
+                and iteration % 10 != 0
+                and iteration != iterations - 1
+            ):
                 print(
                     'Log Likelihood after {} iterations: {}'.format(
                         iteration,
