@@ -16,6 +16,7 @@ def maximization(X, g):
         or g.shape[0] == 0
         or g.shape[1] != X.shape[0]
         or not np.all(np.isfinite(g))
+        or not np.allclose(np.sum(g, axis=0), 1)
     ):
         return None, None, None
 
