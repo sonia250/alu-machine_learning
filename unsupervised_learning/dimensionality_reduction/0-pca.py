@@ -17,12 +17,11 @@ def pca(X, var=0.95):
     ):
         return None
 
-    _, singular_values, vh = np.linalg.svd(X, full_matrices=False)
-    explained = singular_values ** 2
-    total = np.sum(explained)
+    _, singular_values, vh = np.linalg.svd(X)
+    total = np.sum(singular_values)
     if total == 0:
         return vh[:1].T
 
-    cumulative = np.cumsum(explained) / total
+    cumulative = np.cumsum(singular_values) / total
     dimensions = np.searchsorted(cumulative, var) + 1
     return vh[:dimensions].T

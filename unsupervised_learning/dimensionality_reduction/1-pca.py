@@ -17,5 +17,5 @@ def pca(X, ndim):
     ):
         return None
 
-    _, _, vh = np.linalg.svd(X, full_matrices=False)
+    _, _, vh = np.linalg.svd(X)
     return np.matmul(X, vh[:ndim].T)
