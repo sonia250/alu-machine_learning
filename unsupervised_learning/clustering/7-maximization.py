@@ -15,12 +15,11 @@ def maximization(X, g):
         or X.shape[1] == 0
         or g.shape[0] == 0
         or g.shape[1] != X.shape[0]
-        or np.any(g < 0)
     ):
         return None, None, None
 
     weights = np.sum(g, axis=1)
-    if np.any(weights == 0):
+    if np.any(weights <= 0):
         return None, None, None
 
     pi = weights / X.shape[0]
