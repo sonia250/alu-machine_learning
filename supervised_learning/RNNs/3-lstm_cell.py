@@ -23,12 +23,17 @@ class LSTMCell:
     def forward(self, h_prev, c_prev, x_t):
         """Perform forward propagation for one time step."""
         concat = np.concatenate((h_prev, x_t), axis=1)
-        sigmoid = lambda z: 1 / (1 + np.exp(-z))
-        f = sigmoid(np.matmul(concat, self.Wf) + self.bf)
-        u = sigmoid(np.matmul(concat, self.Wu) + self.bu)
+        f = 1 / (1 + np.exp(-(
+            np.matmul(concat, self.Wf) + self.bf
+        )))
+        u = 1 / (1 + np.exp(-(
+            np.matmul(concat, self.Wu) + self.bu
+        )))
         c_tilde = np.tanh(np.matmul(concat, self.Wc) + self.bc)
         c_next = f * c_prev + u * c_tilde
-        o = sigmoid(np.matmul(concat, self.Wo) + self.bo)
+        o = 1 / (1 + np.exp(-(
+            np.matmul(concat, self.Wo) + self.bo
+        )))
         h_next = o * np.tanh(c_next)
         logits = np.matmul(h_next, self.Wy) + self.by
         exp_logits = np.exp(logits - np.max(logits, axis=1, keepdims=True))
