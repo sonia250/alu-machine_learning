@@ -32,7 +32,7 @@ def BIC(
 
     if kmax is None:
         kmax = X.shape[0]
-    if not isinstance(kmax, int) or kmax <= kmin:
+    if not isinstance(kmax, int) or kmax < kmin:
         return None, None, None, None
 
     likelihoods = []
