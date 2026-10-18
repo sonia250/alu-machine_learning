@@ -14,10 +14,11 @@ def bi_rnn(bi_cell, X, h_0, h_t):
             h_0 if step == 0 else H[step - 1, :, :h],
             X[step],
         )
-        backward = bi_cell.backward(
-            h_t if step == t - 1 else H[t - step - 2, :, h:],
-            X[t - step - 1],
-        )
         H[step, :, :h] = forward
-        H[t - step - 1, :, h:] = backward
+    for step in range(t - 1, -1, -1):
+        backward = bi_cell.backward(
+            h_t if step == t - 1 else H[step + 1, :, h:],
+            X[step],
+        )
+        H[step, :, h:] = backward
     return H, bi_cell.output(H)
